@@ -2,11 +2,12 @@
 # Copyright 2024 - 2025, identinet GmbH. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
-# Documentation: https://just.systems/man/en/
-# Documentation: https://www.nushell.sh/book/
+# Documentation Just: https://just.systems/man/en/
+# Documentation Nushell: https://www.nushell.sh/book/
 #
 # See https://hub.docker.com/r/nixos/nix/tags
 
+MANIFEST := 'manifest.json'
 NIXOS_VERSION := '2.25.1'
 
 # Format Justfile
@@ -72,7 +73,7 @@ update-flake:
 [group('ci')]
 docker-build: githooks
     #!/usr/bin/env nu
-    let manifest = (open manifest.json)
+    let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
     print -e $"Building image ($image)"
     # INFO: ?submodules=1# is required, see https://discourse.nixos.org/t/get-nix-flake-to-include-git-submodule/30324/3
@@ -91,7 +92,7 @@ docker-load: docker-build
 [group('ci')]
 docker-run: docker-load
     #!/usr/bin/env nu
-    let manifest = (open manifest.json)
+    let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
     docker run --name $manifest.name -it --rm $image
 
@@ -99,7 +100,7 @@ docker-run: docker-load
 [group('ci')]
 docker-run-sh: docker-load
     #!/usr/bin/env nu
-    let manifest = (open manifest.json)
+    let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
     docker run --name $manifest.name -it --rm --entrypoint /bin/sh $image
 
@@ -107,7 +108,7 @@ docker-run-sh: docker-load
 [group('ci')]
 docker-inspect: docker-build
     #!/usr/bin/env nu
-    let manifest = (open manifest.json)
+    let manifest = (open "{{ MANIFEST }}")
     let image = {
       RepoTags: [$manifest.version],
       Name: $"($manifest.registry.name)/($manifest.name)",
@@ -121,7 +122,7 @@ docker-inspect: docker-build
 [group('ci')]
 docker-inspect-registry:
     #!/usr/bin/env nu
-    let manifest = (open manifest.json)
+    let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name)"
     let data = skopeo inspect $"docker://($image):($manifest.version)" | from json
     $data | merge { Image: $"($image):($manifest.version)@($data | get -i Digest)" } | table -e
@@ -130,7 +131,7 @@ docker-inspect-registry:
 [group('ci')]
 docker-push: docker-build
     #!/usr/bin/env nu
-    let manifest = (open manifest.json)
+    let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name)"
     let mimetype = file -L -i result | parse --regex "result: (?P<mimetype>[^;]+)" | $in.0.mimetype
     if $mimetype == "application/gzip" { cat ./result } else { ./result } | skopeo copy docker-archive:/dev/stdin $"docker://($image):($manifest.version)"
@@ -149,7 +150,7 @@ bump LEVEL="patch" NEW_VERSION="":
       exit 1
     }
     # str replace -r "-.*" "" - strips git's automatic prerelease version
-    let manifest = (open manifest.json)
+    let manifest = (open "{{ MANIFEST }}")
     # let current_version = (git describe | str replace -r "-.*" "" | deno run npm:semver $in)
     let current_version = ($manifest.version |  deno run npm:semver $in)
     let new_version = if "{{ NEW_VERSION }}" == "" {$current_version | deno run npm:semver -i "{{ LEVEL }}" $in | lines | get 0} else {"{{ NEW_VERSION }}"}
