@@ -8,7 +8,9 @@ focused on software development and continuous integration.
 1. Clone repository as a submodule:
    `git submodule add https://github.com/identinet/justlib.git`
 2. Import library into your `Justfile`, see [examples](#examples).
-3. Start using recipes from library, e.g. `just format` to format your Justfile.
+3. Install [nushell](https://www.nushell.sh/) dependency. This makes extensive
+   use of nushell.
+4. Start using recipes from library, e.g. `just format` to format your Justfile.
 
 ## Available recipes
 
@@ -83,8 +85,7 @@ dev: install
 # Open URL in browser.
 [group('development')]
 open:
-    #!/usr/bin/env nu
-    deno run -A npm:open-cli $"https://($env.EXTERNAL_HOSTNAME)"
+    deno run -A npm:open-cli "https://${EXTERNAL_HOSTNAME}"
 
 # Build release version of application
 [group('development')]
