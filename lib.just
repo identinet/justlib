@@ -11,6 +11,10 @@ NIXOS_VERSION := '2.25.1'
 MANIFEST := 'manifest.json'
 export GIT_CLIFF_CONFIG := source_directory() / "cliff.toml"
 
+# Automatically determines the repository URL
+
+export GIT_CLIFF_REPO_URL := `git config --get remote.origin.url | sed -e 's#^git@#https://#' -e 's/\\.git$//'`
+
 # Format Justfile
 [group('internal')]
 format:
