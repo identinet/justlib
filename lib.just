@@ -5,10 +5,11 @@
 # Documentation Just: https://just.systems/man/en/
 # Documentation Nushell: https://www.nushell.sh/book/
 #
-# See https://hub.docker.com/r/nixos/nix/tags
+# NIXOS_VERSION - See https://hub.docker.com/r/nixos/nix/tags
 
-MANIFEST := 'manifest.json'
 NIXOS_VERSION := '2.25.1'
+MANIFEST := 'manifest.json'
+export GIT_CLIFF_CONFIG := source_directory() / "cliff.toml"
 
 # Format Justfile
 [group('internal')]
