@@ -112,9 +112,11 @@ lint-fix: githooks
 update-deps: githooks
     deno outdated --update --latest
 
+# Sets new version in files files, called by `just bump`
+[private]
+[group('ci')]
 _bump_files CURRENT_VERSION NEW_VERSION:
     #!/usr/bin/env nu
-    # _bump_files is called by the bump recipe
     open package.json | upsert version "{{ NEW_VERSION }}" | save -f package.json; git add package.json
 
 # Clean build folder
