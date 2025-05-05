@@ -3,13 +3,26 @@
 Library of useful [Just task runner](https://just.systems/) recipes mainly
 focused on software development and continuous integration.
 
+## Depedencies
+
+- [just](https://just.systems) task runner
+- [git-cliff](https://git-cliff.org) changelog generator
+- [gh](https://cli.github.com/) github cli
+- [nushell](https://www.nushell.sh/) versatile shell
+- [nix](https://nixos.org/) package manager for building docker images
+- [deno](https://deno.com/) JS runtime for handling version bumps
+- [git](https://git-scm.com/) source control management
+- [docker](https://docker.com/) for running images
+- [skopeo](https://github.com/containers/skopeo) for copying images to
+  registries
+- `file` for determining the mime type of build outputs
+
 ## Usage
 
 1. Clone repository as a submodule:
    `git submodule add https://github.com/identinet/justlib.git`
 2. Import library into your `Justfile`, see [examples](#examples).
-3. Install [nushell](https://www.nushell.sh/) dependency. This makes extensive
-   use of nushell.
+3. Install [dependencies](#depedencies).
 4. Start using recipes from library, e.g. `just format` to format your Justfile.
 
 ## Available recipes
