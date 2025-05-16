@@ -99,6 +99,7 @@ docker-run: docker-load
     #!/usr/bin/env nu
     let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
+    print -e (["Executing:" docker run -P --name $manifest.name -it --rm $image] | str join " ")
     docker run --name $manifest.name -it --rm $image
 
 # Run shell image locally
@@ -107,6 +108,7 @@ docker-run-sh: docker-load
     #!/usr/bin/env nu
     let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
+    print -e (["Executing:" docker run -P --name $manifest.name -it --rm --entrypoint /bin/sh $image] | str join " ")
     docker run --name $manifest.name -it --rm --entrypoint /bin/sh $image
 
 # Inspect image
@@ -129,6 +131,7 @@ docker-inspect-registry:
     #!/usr/bin/env nu
     let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name)"
+    print -e (["Executing:" skopeo inspect $"docker://($image):($manifest.version)"] | str join " ")
     let data = skopeo inspect $"docker://($image):($manifest.version)" | from json
     $data | merge { Image: $"($image):($manifest.version)@($data | get -i Digest)" } | table -e -w 120
 
