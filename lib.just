@@ -100,7 +100,7 @@ docker-run: docker-load
     let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
     print -e (["Executing:" docker run -P --name $manifest.name -it --rm $image] | str join " ")
-    docker run --name $manifest.name -it --rm $image
+    docker run -P --name $manifest.name -it --rm $image
 
 # Run shell image locally
 [group('ci')]
@@ -109,7 +109,7 @@ docker-run-sh: docker-load
     let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
     print -e (["Executing:" docker run -P --name $manifest.name -it --rm --entrypoint /bin/sh $image] | str join " ")
-    docker run --name $manifest.name -it --rm --entrypoint /bin/sh $image
+    docker run -P --name $manifest.name -it --rm --entrypoint /bin/sh $image
 
 # Inspect image
 [group('ci')]
