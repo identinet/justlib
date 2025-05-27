@@ -22,6 +22,8 @@ focused on software development and continuous integration.
 1. Clone repository as a submodule:
    `git submodule add https://github.com/identinet/justlib.git`
 2. Import library into your `Justfile`, see [examples](#examples).
+   - Hint: The recipes are split into multiple files that can be imported
+     individually.
 3. Install [dependencies](#depedencies).
 4. Start using recipes from library, e.g. `just format` to format your Justfile.
 
