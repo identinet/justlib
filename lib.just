@@ -6,7 +6,6 @@
 # Documentation Nushell: https://www.nushell.sh/book/
 
 import './default.just'
-import './githooks.just'
 import './docker.just'
 import './ci.just'
 import './nix.just'

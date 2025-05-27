@@ -1,7 +1,7 @@
 # Copyright 2024 - 2025, identinet GmbH. All rights reserved.
 # SPDX-License-Identifier: MIT
 
-import './githooks.just'
+import './default.just'
 import './_manifest.just'
 
 # Build image
