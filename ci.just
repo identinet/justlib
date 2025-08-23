@@ -3,7 +3,7 @@
 #
 # NIXOS_VERSION - See https://hub.docker.com/r/nixos/nix/tags
 
-NIXOS_VERSION := '2.25.1'
+NIXOS_VERSION := '2.28.4'
 
 # CI pipeline task that will create a release of the package
 [group('ci')]
