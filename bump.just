@@ -5,7 +5,8 @@ import './_manifest.just'
 
 # Automatically determines the repository URL
 
-export GIT_CLIFF_REPO_URL := `git config --get remote.origin.url | sed -e 's#^git@#https://#' -e 's/\\.git$//'`
+export GIT_CLIFF_REPO_URL := replace_regex(replace_regex(`git config --get remote.origin.url`, '^git@', 'https://'), '\.git$', '')
+export GIT_CLIFF_CONFIG := if path_exists(justfile_directory() / "cliff.toml") == "true" { justfile_directory() / "cliff.toml" } else { source_directory() / "cliff.toml" }
 
 # Bump version. LEVEL can be one of: major, minor, patch, premajor, preminor, prepatch, or prerelease.
 [group('release')]
