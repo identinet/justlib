@@ -49,11 +49,6 @@ Available recipes:
     docker-push                       # Push image
     docker-run                        # Run image locally
     docker-run-sh                     # Run shell image locally
-
-    [development]
-    dev APP                           # Start application
-    dev-all                           # Start all applications
-    list                              # List applications
     update-flake                      # Update flake
 
     [internal]

@@ -2,6 +2,6 @@
 # SPDX-License-Identifier: MIT
 
 # Update flake
-[group('development')]
+[group('ci')]
 update-flake:
     nix flake update
