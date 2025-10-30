@@ -15,6 +15,7 @@ focused on software development and continuous integration.
 - [docker](https://docker.com/) for running images
 - [skopeo](https://github.com/containers/skopeo) for copying images to
   registries
+- [direnv](https://direnv.net/) for loading environment configurations
 - `file` for determining the mime type of build outputs
 
 ## Usage
@@ -29,11 +30,16 @@ focused on software development and continuous integration.
 
 ## Available recipes
 
+### Individual application
+
+Recipes meant for individual applications.
+
 ```bash
 just --list -f lib.just
 ```
 
 ```
+Available recipes:
     [ci]
     ci                                # CI pipeline task that will create a release of the package
     docker-build                      # Build image
@@ -45,6 +51,9 @@ just --list -f lib.just
     docker-run-sh                     # Run shell image locally
 
     [development]
+    dev APP                           # Start application
+    dev-all                           # Start all applications
+    list                              # List applications
     update-flake                      # Update flake
 
     [internal]
@@ -54,6 +63,16 @@ just --list -f lib.just
     [release]
     bump LEVEL="patch" NEW_VERSION="" # Bump version. LEVEL can be one of: major, minor, patch, premajor, preminor, prepatch, or prerelease.
     release                           # Build application and pushes image - run `just bump` first
+```
+
+### Mono repositories
+
+Recipes meant for mono repositories that contain multiple applications. Import
+these recipes only at the repository's root `Justfile`.
+
+```bash
+# Recipes meant for application development
+just --list -f monorepo.just
 ```
 
 ## Examples
