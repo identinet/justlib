@@ -52,5 +52,5 @@ githooks:
       # "extends:\n  - '@commitlint/config-conventional'" | save ".commitlintrc.yaml"
       # }
       # git add $hooks_folder ".commitlintrc.yaml"
-      git add $hooks_folder
+      # git add $hooks_folder
     }
