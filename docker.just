@@ -63,7 +63,7 @@ docker-inspect-registry:
     let image = $"($manifest.registry.name)/($manifest.name)"
     print -e (["Executing:" skopeo inspect $"docker://($image):($manifest.version)"] | str join " ")
     let data = skopeo inspect $"docker://($image):($manifest.version)" | from json
-    $data | merge { Image: $"($image):($manifest.version)@($data | get -i Digest)" } | table -e -w 120
+    $data | merge { Image: $"($image):($manifest.version)@($data | get -o Digest)" } | table -e -w 120
 
 # Push image
 [group('ci')]
