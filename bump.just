@@ -16,7 +16,7 @@ bump LEVEL="patch" NEW_VERSION="":
       print $"data: ($d)"
       $d
     }
-    let is_jj_repo = if (do -c {jj workspace root} | complete).exit_code == 0 { true } else { false }
+    let is_jj_repo = if (do -i {jj workspace root} | complete).exit_code == 0 { true } else { false }
     let is_main = if $is_jj_repo { do {jj log -r "trunk()::@" -T '"1\n"' --no-graph} | complete | $in.stdout | lines | length | $in > 0} else { do {git rev-parse --abbrev-ref HEAD} | complete | $in.stdout | str trim | $in in [main master] }
     if (not $is_main) {
       print -e "ERROR: A new release can only be created on the main branch."
