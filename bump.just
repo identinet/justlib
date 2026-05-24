@@ -46,4 +46,4 @@ bump LEVEL="patch" NEW_VERSION="":
     if $is_jj_repo { jj sign; jj tag set $new_tag } else { git tag -s -m $new_tag $new_tag }
     if $is_jj_repo { jj bookmark advance -t @-; jj git push; git push --tags } else { git push --atomic origin refs/heads/main $"refs/tags/($new_tag)" }
     let is_github = do {git remote get-url origin} | complete | $in.stdout | str trim | str contains github.com
-    git cliff --strip all --current | if $is_github { gh release create -F - $new_tag } else { "Not creating a gitub release" }
+    if $is_github { git cliff --strip all --current | gh release create -F - $new_tag } else { "Not creating a gitub release" }
