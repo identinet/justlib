@@ -20,8 +20,10 @@ docker-build: githooks
 docker-load: docker-build
     #!/usr/bin/env nu
     # support pre-built image and streamed
+    let manifest = (open "{{ MANIFEST }}")
+    let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
     let mimetype = file -L -i result | parse --regex "result: (?P<mimetype>[^;]+)" | $in.0.mimetype
-    if $mimetype == "application/gzip" { cat ./result } else { ./result } | docker image load
+    if $mimetype == "application/gzip" { cat ./result } else { ./result } | docker import - $image
 
 # Run image locally
 [group('ci')]
