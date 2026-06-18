@@ -30,9 +30,9 @@ bump LEVEL="patch" NEW_VERSION="":
       exit 1
     }
     # str replace -r "-.*" "" - strips git's automatic prerelease version
-    let manifest = (open "{{ MANIFEST }}")
+    let manifest = open "{{ MANIFEST }}"
     # let current_version = (git describe | str replace -r "-.*" "" | deno run npm:semver $in)
-    let current_version = ($manifest.version |  deno run npm:semver $in)
+    let current_version = $manifest.version |  deno run npm:semver $in
     let new_version = if "{{ NEW_VERSION }}" == "" {$current_version | deno run npm:semver -i "{{ LEVEL }}" $in | lines | get 0} else {"{{ NEW_VERSION }}"}
     print "\nChangelog:\n"
     git cliff --strip all -u -t $new_version
