@@ -55,7 +55,7 @@ docker-inspect: docker-build
     }
     # support pre-built image and streamed
     let mimetype = file -L -i result | parse --regex "result: (?P<mimetype>[^;]+)" | $in.0.mimetype
-    if $mimetype == "application/gzip" { cat ./result } else { ./result } | skopeo inspect --config docker-archive:/dev/stdin | from json | merge $image | table -e -w 120
+    if $mimetype == "application/gzip" { cat ./result } else { ./result } | skopeo inspect --config docker-archive:/dev/stdin | from json | merge $image | table -e -w 200
 
 # Inspect image in registry
 [group('ci')]
@@ -65,7 +65,7 @@ docker-inspect-registry:
     let image = $"($manifest.registry.name)/($manifest.name)"
     print -e (["Executing:" skopeo inspect $"docker://($image):($manifest.version)"] | str join " ")
     let data = skopeo inspect $"docker://($image):($manifest.version)" | from json
-    $data | merge { Image: $"($image):($manifest.version)@($data | get -o Digest)" } | table -e -w 120
+    $data | merge { Image: $"($image):($manifest.version)@($data | get -o Digest)" } | table -e -w 200
 
 # Push image
 [group('ci')]
