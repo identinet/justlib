@@ -4,7 +4,7 @@
 # Format Justfile
 [group('internal')]
 format:
-    @just --fmt --unstable
+    @just --fmt
 
 # Install git commit hooks
 [group('internal')]
