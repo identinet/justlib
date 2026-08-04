@@ -8,6 +8,10 @@ import './_manifest.just'
 [group('ci')]
 docker-build: githooks
     #!/usr/bin/env nu
+    let norebuild = $env | default "" NOREBUILD | get NOREBUILD
+    if ($norebuild | is-not-empty) {
+        exit 0
+    }
     let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
     print -e $"Building image ($image)"
@@ -20,28 +24,39 @@ docker-build: githooks
 docker-load: docker-build
     #!/usr/bin/env nu
     # support pre-built image and streamed
+    let norebuild = $env | default "" NOREBUILD | get NOREBUILD
+    if ($norebuild | is-not-empty) {
+        exit 0
+    }
     let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
     let mimetype = file -L -i result | parse --regex "result: (?P<mimetype>[^;]+)" | $in.0.mimetype
-    if $mimetype == "application/gzip" { cat ./result } else { ./result } | docker import - $image
+    # if $mimetype == "application/gzip" { cat ./result } else { ./result } | docker load
+    if $mimetype == "application/gzip" { cat ./result } else { ./result } | skopeo copy docker-archive:/dev/stdin $"docker-daemon:($image)"
 
 # Run image locally
 [group('ci')]
-docker-run: docker-load
+docker-run NOREBUILD=env("NOREBUILD", ""):
     #!/usr/bin/env nu
+    $env.NOREBUILD = "{{ NOREBUILD }}"
+    just docker-load
     let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
-    print -e (["Executing:" docker run -P --name $manifest.name -it --rm $image] | str join " ")
-    docker run -P --name $manifest.name -it --rm $image
+    let cmd = [docker run -P --name $manifest.name -it --rm $image]
+    print -e (["Executing:", ...$cmd] | str join " ")
+    run-external $cmd
 
 # Run shell image locally
 [group('ci')]
-docker-run-sh: docker-load
+docker-run-sh NOREBUILD=env("NOREBUILD", "") CMD="/bin/sh":
     #!/usr/bin/env nu
+    $env.NOREBUILD = "{{ NOREBUILD }}"
+    just docker-load
     let manifest = (open "{{ MANIFEST }}")
     let image = $"($manifest.registry.name)/($manifest.name):($manifest.version)"
-    print -e (["Executing:" docker run -P --name $manifest.name -it --rm --entrypoint /bin/sh $image] | str join " ")
-    docker run -P --name $manifest.name -it --rm --entrypoint /bin/sh $image
+    let cmd = [docker run -P --name $manifest.name -it --rm --entrypoint "{{ CMD }}" $image]
+    print -e (["Executing:" ...$cmd] | str join " ")
+    run-external $cmd
 
 # Inspect image
 [group('ci')]
