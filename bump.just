@@ -46,6 +46,6 @@ bump LEVEL="patch" NEW_VERSION="":
     if $is_jj_repo { jj describe -m $msg } else { git commit -n -m $msg }
     let new_tag = pwd | path split | reverse | drop (git rev-parse --show-toplevel | path split | length) | reverse | append $new_version | str join "/"
     if $is_jj_repo { jj sign; jj tag set $new_tag; jj tag track $new_tag } else { git tag -s -m $new_tag $new_tag }
-    if $is_jj_repo { jj bookmark advance -t @-; jj git push; git push --tracked } else { git push --atomic origin refs/heads/main $"refs/tags/($new_tag)" }
+    if $is_jj_repo { jj bookmark advance -t @-; jj git push --tracked } else { git push --atomic origin refs/heads/main $"refs/tags/($new_tag)" }
     let is_github = do {git remote get-url origin} | complete | $in.stdout | str trim | str contains github.com
     if $is_github { git cliff --strip all --current | gh release create -F - $new_tag } else { "Not creating a gitub release" }
